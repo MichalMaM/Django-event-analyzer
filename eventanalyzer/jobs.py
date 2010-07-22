@@ -1,13 +1,15 @@
 """
 This file is for running analysis which require run repeatedly by time intervals
 """
+
 import sys
+import string
 from datetime import datetime
 from subprocess import Popen, PIPE
 #from django.db import transaction
 from eventanalyzer.models import Report, ReportArchive, ReportResult
 from eventanalyzer.conf import settings
-from eventanalyzer.output import OutputCSV
+from eventanalyzer.output import OutputCSV, OutputMongo
 
 PERIOD_CHOICES = {
     'd': 'day',
@@ -35,19 +37,24 @@ def create_report():
     #
     print Report.objects.filter(interval=sys.argv[1])
     for report in Report.objects.filter(interval=sys.argv[1]):
-	#proved analyzu na mongu => report.db_query
-
 	#
 	print report.db_query
 	try:
 	    output_shell = Popen(["mongo", "--eval", report.db_query+".forEach(printjson)", settings.MONGODB_DB], stdout=PIPE).communicate()[0]
+	    if string.find(output_shell, "Error") >= 0:
+		print "error - bad mongo query "
+		return False
 	except:
-	    print "error - bad mongo query"
+	    print "error - mongo error"
 	    return False
 	#
-	#print full_analyse
-	#for x in full_analyse:
-	#    print x
+	print output_shell
+	
+	
+	index = string.find(output_shell, "{")
+	output_shell = output_shell[index:]
+	mongo_output = OutputMongo(output_shell)
+	full_analyse = mongo_output.getoutput()
 	
 	run_date = datetime.now()
 	csv_file = "report"+"_"+report.title+"_"+`run_date.year`+"_"+`run_date.month`+"_"+`run_date.day`+".csv"
