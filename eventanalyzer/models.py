@@ -12,7 +12,9 @@ PERIOD_CHOICES = (
 )
 
 def get_mongo_collection():
-    "Open a connection to MongoDB and return the collection to use."
+    """
+    Open a connection to MongoDB and return the collection to use.
+    """
     if settings.RIGHT_MONGODB_HOST:
         connection = Connection.paired(
                 left=(settings.MONGODB_HOST, settings.MONGODB_PORT),
