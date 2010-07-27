@@ -48,11 +48,13 @@ def create_report():
 	    print "error - mongo error"
 	    return False
 	#
-	#print full_analyse
-	#for x in full_analyse:
-	#    print x
+	print output_shell
+	
 	
 	index = string.find(output_shell, "{")
+	if index == -1:
+	    print "error - no JSON data "
+	    return False 
 	output_shell = output_shell[index:]
 	mongo_output = OutputMongo(output_shell)
 	full_analyse = mongo_output.getoutput()

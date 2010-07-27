@@ -34,8 +34,8 @@ RIGHT_MONGODB_PORT = 27017
 MONGODB_DB = 'events'
 MONGODB_COLLECTION = 'events'
 
-# name of the file for output of the analyse
-REPORT_PATH = ''
+# path of the directory for output files of the analyse
+REPORT_PATH = 'outputreports/'
 
 
 settings = Settings(__name__, 'STATISTICS')

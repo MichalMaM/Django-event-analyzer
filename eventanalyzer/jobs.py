@@ -52,6 +52,9 @@ def create_report():
 	
 	
 	index = string.find(output_shell, "{")
+	if index == -1:
+	    print "error - no JSON data "
+	    return False 
 	output_shell = output_shell[index:]
 	mongo_output = OutputMongo(output_shell)
 	full_analyse = mongo_output.getoutput()
