@@ -35,7 +35,7 @@ MONGODB_DB = 'events'
 MONGODB_COLLECTION = 'events'
 
 # path of the directory for output files of the analyse
-REPORT_PATH = '/outputreports/'
+REPORT_PATH = 'outputreports/'
 
 
 settings = Settings(__name__, 'STATISTICS')

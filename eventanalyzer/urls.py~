@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from xxx import views
+from eventanalyzer import views
 
 # Uncomment the next two lines to enable the admin:
 
@@ -15,7 +15,5 @@ urlpatterns = patterns('',
     #(r'^(?P<poll_id>\d+)/$', 'detail'),
     #(r'^(?P<poll_id>\d+)/results/$', 'results'),
     #(r'^$', 'pokus.xxx.views.execution_analyses'),
-    url(r'^ii$', views.execution_analyses, name='xxx-execution-analyses'),
-    url(r'^analyse/$', views.analyse_vote, name='xxx-analyse-vote'),
-    url(r'^result/$', views.analyse_result, name='xxx-analyse-result'),
+    
 )

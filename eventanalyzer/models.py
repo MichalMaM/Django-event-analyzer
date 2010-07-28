@@ -43,7 +43,7 @@ class ReportResult(models.Model):
     """
     report = models.ForeignKey(Report, verbose_name=_('Report'))
     output = models.TextField(_( 'Output in CSV' ))
-    run_date = models.DateTimeField(_( 'Date of run' )) # , default=datetime.now, editable=False
+    run_date = models.DateTimeField(_( 'Date of run' )) 
     
 
     

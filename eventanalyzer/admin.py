@@ -1,21 +1,7 @@
 from django.contrib import admin
-
 from eventanalyzer.models import Report, ReportResult
 
-#class ReportArchiveInline(admin.StackedInline):
-#    model = ReportArchive
-#    list_editable = ('output',)
-#    extra = 5
-
 class ReportAdmin(admin.ModelAdmin):
-#    fieldsets = [
-#        (None,               {'fields': ['title']}),
-#	(None,               {'fields': ['description']}),
-#	(None,               {'fields': ['db_query']}),
-#	(None,               {'fields': ['interval']}),
-        #('Date of last report ', {'fields': ['last_report'], 'classes': ['collapse']}),
-#    ]
-    #inlines = [ReportArchiveInline]
 
     list_display = ('title', 'description', 'interval', 'last_report')
     search_fields = ['title']

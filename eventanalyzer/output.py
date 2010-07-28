@@ -70,12 +70,8 @@ class OutputMongo:
 		new_record = self.__nextdata(record)
 		output_records.append(new_record)
 	    else:
-		#try:
-		    #print "zaznam: "+record
 		output_records.append(anyjson.deserialize(record))
-		#except ValueError, e:
-		    #print "error in translate from json format"
-	    #print "zbytek: "+output_shell[index+1:]
+	
 	    output_shell = output_shell[index+1:]
 
 	output_shell=string.replace(output_shell, "\n", "")

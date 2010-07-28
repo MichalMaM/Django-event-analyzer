@@ -6,7 +6,6 @@ import sys
 import string
 from datetime import datetime
 from subprocess import Popen, PIPE
-#from django.db import transaction
 from eventanalyzer.models import Report, ReportResult
 from eventanalyzer.conf import settings
 from eventanalyzer.output import OutputCSV, OutputMongo
@@ -18,7 +17,6 @@ PERIOD_CHOICES = {
     'y': 'year',
 }
 
-#@transaction.commit_on_success
 def create_report():
     """
     create report in csv file for analyses by refer argument  
@@ -26,19 +24,15 @@ def create_report():
     if len(sys.argv) != 2:
 	print "error - correct use of this script: "+sys.argv[0]+" [time interval]"
 	return False
-    #test argumentu
-    #print sys.argv[0], " : ", sys.argv[1]
+
     try:
 	PERIOD_CHOICES[sys.argv[1]]
     except:
 	print "error - correct use of this script: "+sys.argv[0]+" [time interval]"
 	return False
     
-    #
-    #print Report.objects.filter(interval=sys.argv[1])
     for report in Report.objects.filter(interval=sys.argv[1]):
-	#
-	#print report.db_query
+
 	try:
 	    output_shell = Popen(["mongo", "--eval", report.db_query+".forEach(printjson)", settings.MONGODB_DB], stdout=PIPE).communicate()[0]
 	    if string.find(output_shell, "Error") >= 0:
@@ -47,10 +41,7 @@ def create_report():
 	except:
 	    print "error - mongo error"
 	    return False
-	#
-	#print output_shell
-	
-	
+
 	index = string.find(output_shell, "{")
 	if index == -1:
 	    print "error - no JSON data "
@@ -71,9 +62,7 @@ def create_report():
 	
 	result = ReportResult(report=report, output= csv_out.csv, run_date=run_date)
 	result.save()
-	
-    #
-    print "OK"
+
     return True
 
 

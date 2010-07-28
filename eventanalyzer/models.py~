@@ -32,24 +32,20 @@ class Report(models.Model):
     description = models.CharField(_( 'Description' ), max_length=200)
     db_query = models.TextField(_( 'Database query' ))
     interval = models.CharField( _( 'Interval' ), max_length=1, choices=PERIOD_CHOICES )
+    last_report = models.DateTimeField(_( 'Last report' ), blank=True, null=True)
 
     def __unicode__(self):
         return self.title
 
 class ReportResult(models.Model):
     """
-    save result of reports for individual analysis.
-    """
-    report = models.OneToOneField(Report, verbose_name=_('Report'))
-    last_report = models.DateTimeField(_( 'Last report' ))
-
-
-class ReportArchive(models.Model):
-    """
     save report file for individual analysis.
     """
     report = models.ForeignKey(Report, verbose_name=_('Report'))
     output = models.TextField(_( 'Output in CSV' ))
     run_date = models.DateTimeField(_( 'Date of run' )) # , default=datetime.now, editable=False
+    
+
+    
 
     
