@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from eventanalyzer.models import Report, ReportArchive, ReportResult
+from eventanalyzer.models import Report, ReportResult
 
 #class ReportArchiveInline(admin.StackedInline):
 #    model = ReportArchive
@@ -17,22 +17,18 @@ class ReportAdmin(admin.ModelAdmin):
 #    ]
     #inlines = [ReportArchiveInline]
 
-    list_display = ('title', 'description', 'interval')
+    list_display = ('title', 'description', 'interval', 'last_report')
     search_fields = ['title']
-
-class ReportResultAdmin(admin.ModelAdmin):
-    list_display = ('report', 'last_report')
-    search_fields = ['report']
     date_hierarchy = 'last_report'
 
-class ReportArchiveAdmin(admin.ModelAdmin):
+class ReportResultAdmin(admin.ModelAdmin):
 
     list_display = ('report', 'run_date')
     search_fields = ['report']
     list_filter = ['report']
     date_hierarchy = 'run_date'
     
+    
 
 admin.site.register(Report, ReportAdmin)
 admin.site.register(ReportResult, ReportResultAdmin)
-admin.site.register(ReportArchive, ReportArchiveAdmin)

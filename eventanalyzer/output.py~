@@ -15,13 +15,15 @@ class OutputCSV:
 
     def addrecord(self, record):
 	csv_line = ""
-	for element in record:
+	shorted_keys = record.keys().sort()
+	for element in shorted_keys:
 	    if type(record[element]) == types.DictType:
-		for atom in record[element]:
-		    csv_line = csv_line +`record[element][atom]`+", "
+		second_keys = record[element].keys().sort()
+		for atom in second_keys:
+		    csv_line = csv_line +str(record[element][atom])+","
 	    else:
-		csv_line = csv_line +`record[element]`+", "
-	csv_line = csv_line[0:-2]+"\n"
+		csv_line = csv_line +str(record[element])+","
+	csv_line = csv_line[0:-1]+"\n"
 	self.csv += csv_line  
 	self.file_out.write(csv_line)
     
