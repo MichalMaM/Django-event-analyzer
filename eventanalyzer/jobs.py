@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This file is for running analysis which require run repeatedly by time intervals
 """
@@ -32,23 +33,36 @@ def create_report():
 	return False
     
     for report in Report.objects.filter(interval=sys.argv[1]):
+	
+	db_query = report.db_query
+	print db_query
+	if string.find(db_query, "count(") == -1:
+	    db_query = db_query+".forEach(printjson)"
+	    print db_query
 
 	try:
-	    output_shell = Popen(["mongo", "--eval", report.db_query+".forEach(printjson)", settings.MONGODB_DB], stdout=PIPE).communicate()[0]
-	    if string.find(output_shell, "Error") >= 0:
+	    process = Popen(["mongo", "--eval", db_query, settings.MONGODB_DB], stdout=PIPE)
+	    output_shell = process.communicate()[0]
+	    if process.returncode != 0:
 		print "error - bad mongo query "
 		return False
-	except:
-	    print "error - mongo error"
+	except e:
+	    print "error - mongo error: ", e[0]
 	    return False
-
+	
+	print output_shell
 	index = string.find(output_shell, "{")
 	if index == -1:
-	    print "error - no JSON data "
-	    return False 
-	output_shell = output_shell[index:]
-	mongo_output = OutputMongo(output_shell)
-	full_analyse = mongo_output.getoutput()
+	    analyse_list = string.split(output_shell, "\n")
+	    try:
+		analyse_element = int(analyse_list[3])
+		full_analyse = [{"count" : analyse_element}]
+	    except ValueError:
+		full_analyse = [{"data" : "no data"}]
+	else:
+	    output_shell = output_shell[index:]
+	    mongo_output = OutputMongo(output_shell)
+	    full_analyse = mongo_output.getoutput()
 	
 	run_date = datetime.now()
 	csv_file = "report"+"_"+report.title+"_"+str(run_date.year)+"_"+str(run_date.month)+"_"+str(run_date.day)+".csv"
@@ -56,7 +70,7 @@ def create_report():
 	for element in full_analyse:
 	    csv_out.addrecord(element)
 	csv_out.closefile()
-	
+
 	report.last_report = run_date
 	report.save()
 	

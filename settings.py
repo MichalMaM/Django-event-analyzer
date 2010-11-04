@@ -1,5 +1,8 @@
 # Django settings for mywebevents project.
 
+import djcelery
+djcelery.setup_loader()
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -84,7 +87,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     "django.contrib.admin",
-    "celery",
+    "djcelery",
     "eventtracker",
     "mywebevents.eventanalyzer"
 )

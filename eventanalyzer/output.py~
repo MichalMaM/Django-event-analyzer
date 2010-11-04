@@ -1,20 +1,57 @@
+# -*- coding: utf-8 -*-
 """
 This file contains two classes for processing output from mongo shell
 """
 import types
 import string
 import anyjson
+import csv
+import codecs
+import cStringIO
+
+class UnicodeWriter:
+    """
+    A CSV writer which will write rows to CSV file "f",
+    which is encoded in the given encoding.
+    """
+
+    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+        # Redirect output to a queue
+        self.queue = cStringIO.StringIO()
+        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+        self.stream = f
+        self.encoder = codecs.getincrementalencoder(encoding)()
+
+    def writerow(self, row):
+        self.writer.writerow([s.encode("utf-8") for s in row])
+        # Fetch UTF-8 output from the queue ...
+        data = self.queue.getvalue()
+        data = data.decode("utf-8")
+        # ... and reencode it into the target encoding
+        data = self.encoder.encode(data)
+        # write to the target stream
+        self.stream.write(data)
+        # empty queue
+        self.queue.truncate(0)
+	return data
+
+    def writerows(self, rows):
+        for row in rows:
+            self.writerow(row)
+
 
 class OutputCSV:
     """
     Saving data to csv file
     """
     def __init__(self, file_name):
-	self.file_out = open(file_name, "w")
+	self.csv_file = open(file_name, "wb")
+	#self.file_out = csv.writer(open(file_name, "wb"), delimiter=",", quoting=csv.QUOTE_MINIMAL)
+	self.file_out = UnicodeWriter(self.csv_file, delimiter=",", quoting=csv.QUOTE_MINIMAL)
 	self.csv = ""
 
     def addrecord(self, record):
-	csv_line = ""
+	csv_line = []
 	shorted_keys = record.keys()
 	shorted_keys.sort()
 	for element in shorted_keys:
@@ -22,15 +59,23 @@ class OutputCSV:
 		second_keys = record[element].keys()
 		second_keys.sort()
 		for atom in second_keys:
-		    csv_line = csv_line +str(record[element][atom])+","
+		    if type(record[element][atom]) == types.UnicodeType:
+			csv_line.append(record[element][atom])
+		    else:
+			csv_line.append(str(record[element][atom]))
 	    else:
-		csv_line = csv_line +str(record[element])+","
-	csv_line = csv_line[0:-1]+"\n"
-	self.csv += csv_line  
-	self.file_out.write(csv_line)
-    
+		if type(record[element]) == types.UnicodeType:
+		    csv_line.append(record[element])
+		else:
+		    csv_line.append(str(record[element]))
+	
+	#self.csv += string.join(csv_line,",")+"\n"
+	encoded_data = self.file_out.writerow(csv_line)
+	self.csv += encoded_data
+
     def closefile(self):
-	self.file_out.close()
+	self.csv_file.close()
+
 
 
 class OutputMongo:
@@ -70,12 +115,8 @@ class OutputMongo:
 		new_record = self.__nextdata(record)
 		output_records.append(new_record)
 	    else:
-		#try:
-		    #print "zaznam: "+record
 		output_records.append(anyjson.deserialize(record))
-		#except ValueError, e:
-		    #print "error in translate from json format"
-	    #print "zbytek: "+output_shell[index+1:]
+	
 	    output_shell = output_shell[index+1:]
 
 	output_shell=string.replace(output_shell, "\n", "")
