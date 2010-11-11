@@ -1,6 +1,0 @@
-# my crontab file-use: crontab mycrontab
-# run jobs.py for analysis dayly repetition
-00 10 * * * /usr/bin/python /home/michal/jobs.py d
-00 10 * * 0 /usr/bin/python /home/michal/jobs.py w 
-00 10 9 * * /usr/bin/python /home/michal/jobs.py m
-00 10 9 12 * /usr/bin/python /home/michal/jobs.py y
