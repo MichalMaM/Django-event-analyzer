@@ -22,6 +22,11 @@ class Settings(object):
         return dir(self.module)
 
 
+# set of hosts for mongo connection
+MONGODB_HOSTS = [
+    'localhost:27017'
+]
+
 # primary mongo connection
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
@@ -35,7 +40,12 @@ MONGODB_DB = 'events'
 MONGODB_COLLECTION = 'events'
 
 # path of the directory for output files of the analyse
-REPORT_PATH = 'outputreports/'
+REPORT_PATH = '/home/michal/diplo/outputreports'
 
+# tuple of plugins
+PLUG_IN = (
+    ('g', 'graph'), 
+    ('o', 'output file'),
+)
 
 settings = Settings(__name__, 'STATISTICS')
