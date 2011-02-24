@@ -42,10 +42,4 @@ MONGODB_COLLECTION = 'events'
 # path of the directory for output files of the analyse
 REPORT_PATH = '/home/michal/diplo/outputreports'
 
-# tuple of plugins
-PLUG_IN = (
-    ('g', 'graph'), 
-    ('o', 'output file'),
-)
-
 settings = Settings(__name__, 'STATISTICS')

@@ -1,3 +1,6 @@
+#import pkg_resources
+#import string
+
 from pymongo.connection import Connection
 from eventanalyzer.conf import settings
 from datetime import datetime
@@ -11,6 +14,19 @@ PERIOD_CHOICES = (
     ('w', 'week'),
     ('y', 'year'),
 )
+
+
+#PLUG_INS = []
+#for dist in pkg_resources.working_set.iter_entry_points("output.plugins.0.01"):
+#    try:
+#	PLUG_INS.append((dist.name, string.replace(dist.name, "_", " ")))
+#    except ImportError, err:
+#        print "Error while loading command %s: %s" % (dist.name, str(err))
+
+PLUG_INS = [
+    ('bar_graph', 'bar graph'), 
+    ('output_csv_file', 'output csv file'),
+]
 
 
 def get_mongo_collection():
@@ -58,7 +74,7 @@ class Analysis(models.Model):
     """
     title = models.CharField( _( 'Title' ), max_length=100, unique=True)
     description = models.CharField(_( 'Description' ), max_length=200)
-    plug_in = models.CharField( _( 'Plug-in' ), max_length=1, choices=settings.PLUG_IN )
+    plug_in = models.CharField( _( 'Plug-in' ), choices=PLUG_INS )
     queries = models.ManyToManyField(Report, verbose_name=_('Queries'))
     date_from = models.DateTimeField(_( 'Date from' ), blank=True, null=True)
     date_to = models.DateTimeField(_( 'Date to' ), blank=True, null=True)

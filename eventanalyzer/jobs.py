@@ -1,7 +1,7 @@
 """
 This file is for running analysis and data reports that require run repeatedly by cron 
 """
-
+#import pkg_resources
 import sys
 import string
 import pymongo
@@ -25,6 +25,13 @@ PERIOD_CHOICES = {
     'w': DELTA_TIME_WEEK,
     'y': DELTA_TIME_YEAR,
 }
+
+#PLUG_INS = {}
+#for dist in pkg_resources.working_set.iter_entry_points("output.plugins.0.01"):
+#    try:
+#	PLUG_INS[dist.name] = dist.load()
+#    except ImportError, err:
+#        print "Error while loading command %s: %s" % (dist.name, str(err))
 
 
 def execute_query(db_query, report, run_date):
@@ -127,6 +134,7 @@ def process_output_reports(results, analysis, date_now):
     """
     process result data depending on selected plug-in   
     """
+    ##PLUG_INS[analysis.plug_in].set_data(analysis.title, file_path, results)
     output = OutputCSV()
     file_path = settings.REPORT_PATH+"/analysis%s_%s_%s_%s_%s_%s_%s" % (analysis.id, date_now.year, date_now.month, date_now.day, date_now.hour, date_now.minute, date_now.second)
     output.set_data(analysis.title, file_path, results)
