@@ -38,7 +38,7 @@ def execute_query(db_query, report, run_date):
     """
     execute query from report in mongo db and save result  
     """
-
+    print db_query+"\n"
     try:
 	process = Popen(["mongo","--host", string.join(settings.MONGODB_HOSTS), "--eval", db_query, settings.MONGODB_DB], stdout=PIPE)
 	output_shell = process.communicate()[0]
@@ -54,7 +54,7 @@ def execute_query(db_query, report, run_date):
     if index == -1:
 	analyse_list = string.split(output_shell, "\n")
 	try:
-	    analyse_element = int(analyse_list[len(analyse_list)-1])
+	    analyse_element = int(analyse_list[-2])
 	    output = '{"count" : %s}' % (analyse_element)
 	except ValueError:
 	    output = '{"data" : "no data"}'
@@ -106,7 +106,7 @@ def execute_past_reports(report, db_query, date_from, date_to, date_now):
 	#report.date_from must be found in db if date_form is not set
 	if report.date_from == None:
 	    collection = get_mongo_collection()
-	    for record in collection.find().sort("timestamp", pymongo.ASCENDING).limit(1)
+	    for record in collection.find().sort("timestamp", pymongo.ASCENDING).limit(1):
 		report_date_from = record["timestamp"]
 	else:
 	    report_date_from = report.date_from
@@ -117,10 +117,10 @@ def execute_past_reports(report, db_query, date_from, date_to, date_now):
 	    db_query_var = db_query
 	    if date_from_var != None:
 		date_from_var = date_from_var - timedelta( seconds=PERIOD_CHOICES[report.interval])
-		db_query_var = string.replace(db_query_var, "${{d1}}", "new Date(%s,%s,%s)" % (date_from_var.year, date_from_var.month, date_from_var.day))
+		db_query_var = string.replace(db_query_var, "${{d1}}", "new Date(%s,%s,%s)" % (date_from_var.year, date_from_var.month - 1, date_from_var.day))
 	    if date_to_var != None:
 		date_to_var = date_to_var - timedelta( seconds=PERIOD_CHOICES[report.interval])
-		db_query_var = string.replace(db_query_var, "${{d2}}", "new Date(%s,%s,%s)" % (date_to_var.year, date_to_var.month, date_to_var.day))
+		db_query_var = string.replace(db_query_var, "${{d2}}", "new Date(%s,%s,%s)" % (date_to_var.year, date_to_var.month - 1, date_to_var.day))
 		    
 	    run_date = run_date - timedelta( seconds=PERIOD_CHOICES[report.interval])
 	    if not execute_query(db_query_var, report, run_date):
@@ -159,7 +159,7 @@ def create_analysis():
 		break
 	      
 	    results = []
-	    for report in analysis.filter(activated=True):
+	    for report in analysis.queries.filter(activated=True):
 		if analysis.date_from != None and analysis.date_to != None:
 		    report_results = ReportResult.objects.filter(report=report, run_date__lte=analysis.date_to, run_date__gte=analyses.date_from).order_by('-run_date')  
 		elif analysis.date_from == None and analysis.date_to != None:
@@ -168,18 +168,29 @@ def create_analysis():
 		    report_results = ReportResult.objects.filter(report=report, run_date__gte=analyses.date_from).order_by('-run_date')
 		else:
 		    report_results = ReportResult.objects.filter(report=report).order_by('-run_date')
-
+		
 		# create output from mongo output
 		output_result = OutputResult(report=report.title)
+		output_result.date_array = []
+		output_result.output_array = []
+		print "\n KOLIK: "+ str(output_result.output_array)
 		for result in report_results:
 		    output_result.date_array.append(result.run_date)
+		    #print result.output
+		    #print "\nouttest: "+str(output_result.output_array)
 		    mongo_output = OutputMongo(result.output)
 		    output_result.output_array.append(mongo_output.getoutput())
-		
+
+		print "out: ",output_result.output_array
 		results.append(output_result)    
-		    
+
+
+	    #print results[0].output_array
+	    #print "\n\n"
+	    #print results[1].output_array
 	    # process outputs
 	    if not process_output_reports(results, analysis, date_now):
+		print "Error in execute analysis: %s" % (analysis.title)
 		break
 	    
 	    if analysis.interval != 'n':
@@ -228,9 +239,9 @@ def create_reports():
 
 	    # execute query for this time
 	    if date_from != None:
-		db_query = string.replace(db_query, "${{d1}}", "new Date(%s,%s,%s)" % (date_from.year, date_from.month, date_from.day))
+		db_query = string.replace(db_query, "${{d1}}", "new Date(%s,%s,%s)" % (date_from.year, date_from.month - 1, date_from.day))
 	    if date_to != None:
-		db_query = string.replace(db_query, "${{d2}}", "new Date(%s,%s,%s)" % (date_to.year, date_to.month, date_to.day))
+		db_query = string.replace(db_query, "${{d2}}", "new Date(%s,%s,%s)" % (date_to.year, date_to.month - 1, date_to.day))
 
 	    if not execute_query(db_query, report, date_now):
 		print "error - unsupported query: report title: %s, id: " % (report.title, report.id)

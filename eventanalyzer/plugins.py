@@ -59,7 +59,7 @@ class OutputCSV:
 	    for data_json in record.output_array[index]:
 		csv_record = []
 		csv_record.append(record.report)
-		csv_record.append(record.date_array[index].strftime("%Y-%M-%d:%H:%m:%S"))
+		csv_record.append(record.date_array[index].strftime("%Y-%m-%d:%H:%M:%S"))
 		shorted_keys = data_json.keys()
 		shorted_keys.sort()
 		for element in shorted_keys:

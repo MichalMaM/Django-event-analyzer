@@ -11,7 +11,7 @@ class ReportAdmin(admin.ModelAdmin):
 
 class ReportResultAdmin(admin.ModelAdmin):
 
-    list_display = ('report', 'run_date')
+    list_display = ('report', 'run_date', 'output')
     search_fields = ['report']
     list_filter = ['report']
     date_hierarchy = 'run_date'

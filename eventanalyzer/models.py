@@ -74,7 +74,7 @@ class Analysis(models.Model):
     """
     title = models.CharField( _( 'Title' ), max_length=100, unique=True)
     description = models.CharField(_( 'Description' ), max_length=200)
-    plug_in = models.CharField( _( 'Plug-in' ), choices=PLUG_INS )
+    plug_in = models.CharField( _( 'Plug-in' ), max_length=30, choices=PLUG_INS )
     queries = models.ManyToManyField(Report, verbose_name=_('Queries'))
     date_from = models.DateTimeField(_( 'Date from' ), blank=True, null=True)
     date_to = models.DateTimeField(_( 'Date to' ), blank=True, null=True)

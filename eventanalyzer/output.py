@@ -31,7 +31,7 @@ class OutputMongo:
 	output_shell = self.output_shell
 
 	while True:
-	    if string.find(output_shell, "{") != -1:
+	    if string.find(output_shell, "{") == -1:
 		break
 	    first_index = string.find(output_shell, "{")
 	    last_index = string.find(output_shell, "}")
@@ -39,8 +39,7 @@ class OutputMongo:
 	    record = string.replace(record, "\n", "")
 	    record = string.replace(record, "\t", "")
 	    output_records.append(anyjson.deserialize(record))
-	    output_shell = output_shell[last_index+1]
-
+	    output_shell = output_shell[last_index+1:]
 	return output_records
 	    
 	
