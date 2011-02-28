@@ -1,5 +1,5 @@
-#import pkg_resources
-#import string
+import pkg_resources
+import string
 
 from pymongo.connection import Connection
 from eventanalyzer.conf import settings
@@ -16,17 +16,17 @@ PERIOD_CHOICES = (
 )
 
 
-#PLUG_INS = []
-#for dist in pkg_resources.working_set.iter_entry_points("output.plugins.0.01"):
-#    try:
-#	PLUG_INS.append((dist.name, string.replace(dist.name, "_", " ")))
-#    except ImportError, err:
-#        print "Error while loading command %s: %s" % (dist.name, str(err))
+PLUG_INS = []
+for dist in pkg_resources.working_set.iter_entry_points("output.plugins.0.01"):
+    try:
+	PLUG_INS.append((dist.name, string.replace(dist.name, "_", " ")))
+    except ImportError, err:
+        print "Error while loading command %s: %s" % (dist.name, str(err))
 
-PLUG_INS = [
-    ('bar_graph', 'bar graph'), 
-    ('output_csv_file', 'output csv file'),
-]
+#PLUG_INS = [
+#    ('bar_graph', 'bar graph'), 
+#    ('output_csv_file', 'output csv file'),
+#]
 
 
 def get_mongo_collection():

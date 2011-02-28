@@ -5,8 +5,10 @@ VERSION = (0, 0, 1)
 __version__ = VERSION
 __versionstr__ = '.'.join(map(str, VERSION))
 
+name = 'eventanalyzer'
+
 setup(
-    name = 'eventanalyzer',
+    name = name,
     version = __versionstr__,
     description = 'Django Event Analyzer',
     long_description = '\n'.join((
