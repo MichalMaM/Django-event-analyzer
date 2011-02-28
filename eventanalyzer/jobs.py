@@ -79,25 +79,31 @@ def check_query(report):
 	if report.db_query[len(report.db_query) - 1] == ")" or report.db_query[len(report.db_query) - 1] == ";":
 	    db_query = report.db_query
 	else:
-	    print "error - unsupported query: report title: %s, id: " % (report.title, report.id)
+	    print "error - unsupported query: report title: %s, id: %s" % (report.title, report.id)
 	    return (False, '')
-    elif string.find(report.db_query, "group(") != -1 or string.find(db_query, "mapReduce(") != -1:
+    elif string.find(report.db_query, "group(") != -1 or string.find(report.db_query, "mapReduce(") != -1:
 	if report.db_query[len(report.db_query) - 1] == ")":
-	    db_query = report.db_query+".forEach(printjson)"
+	    if string.find(report.db_query, "forEach(printjson)") == -1:
+		db_query = report.db_query+".forEach(printjson)"
+	    else:
+		db_query = report.db_query
 	elif report.db_query[len(report.db_query) - 1] == ";":
-	    db_query = report.db_query[0:len(report.db_query) - 1]+".forEach(printjson)"
+	    if string.find(report.db_query, "forEach(printjson)") == -1:
+		db_query = report.db_query[0:len(report.db_query) - 1]+".forEach(printjson)"
+	    else:
+		db_query = report.db_query
 	else:
-	    print "error - unsupported query: report title: %s, id: " % (report.title, report.id)
+	    print "error - unsupported query: report title: %s, id: %s" % (report.title, report.id)
 	    return (False, '')
     else:
-	print "error - unsupported query: report title: %s, id: " % (report.title, report.id)
+	print "error - unsupported query: report title: %s, id: %s" % (report.title, report.id)
 	return (False, '')
 
     return (True, db_query)
 
 def execute_past_reports(report, db_query, date_from, date_to, date_now):
     """
-    check if query is good   
+    excuted reports results for past periods for given report
     """
     if report.last_report == None and report.interval != 'n' and date_from != None:
 	date_from_var = date_from
@@ -213,7 +219,7 @@ def create_reports():
 	    #if report is now so do not execute it times 
 	    if report.last_report != None and report.interval == 'n':
 		break
-	    if report.date_to != None and report.date_to <= date_now:
+	    if report.date_to != None and report.date_to < date_now:
 		break
 	    
 	    # check if query is good
