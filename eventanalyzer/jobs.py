@@ -30,6 +30,7 @@ PLUG_INS = {}
 for dist in pkg_resources.working_set.iter_entry_points("output.plugins.0.01"):
     try:
 	PLUG_INS[dist.name] = dist.load()
+	#print PLUG_INS[dist.name]
     except ImportError, err:
         print "Error while loading command %s: %s" % (dist.name, str(err))
 
@@ -141,7 +142,7 @@ def process_output_reports(results, analysis, date_now):
     process result data depending on selected plug-in   
     """
     #PLUG_INS[analysis.plug_in].set_data(analysis.title, file_path, results)
-    output = PLUG_INS[analysis.plug_in]
+    output = PLUG_INS[analysis.plug_in]()
     file_path = settings.REPORT_PATH+"/analysis%s_%s_%s_%s_%s_%s_%s" % (analysis.id, date_now.year, date_now.month, date_now.day, date_now.hour, date_now.minute, date_now.second)
     output.set_data(analysis.title, file_path, results)
 

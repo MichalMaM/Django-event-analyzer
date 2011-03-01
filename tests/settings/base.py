@@ -9,7 +9,7 @@ MIDDLEWARE_CLASSES = ()
 ROOT_URLCONF = 'eventanalyzer.urls'
 
 INSTALLED_APPS = (
-    'eventanalyzer'
+    'eventanalyzer',
 )
 
 VERSION = 1
