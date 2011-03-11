@@ -7,6 +7,7 @@ import anyjson
 import csv
 import codecs
 import cStringIO
+from pychart import *
 
 class UnicodeWriter:
     """
@@ -221,7 +222,7 @@ class OutputBarGraph:
 		    partition_list = []
 		    break
 		else:
-		    position = legend_position[json_out[used_key]]
+		    position = legend_position[str(json_out[used_key])]
 		    if json_out.has_key("total"):
 			value = json_out["total"]
 			partition_list[position] = value

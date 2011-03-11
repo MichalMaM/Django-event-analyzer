@@ -159,14 +159,15 @@ def create_analysis():
     
     date_now = datetime.now()
     for analysis in Analysis.objects.filter(activated=True):
-
+	
 	if analysis.last_report == None or analysis.last_report <= date_now - timedelta( seconds=PERIOD_CHOICES[analysis.interval]):
-
+	    
 	    if analysis.last_report != None and analysis.interval == 'n':
-		break
+		continue
 	      
 	    results = []
 	    for report in analysis.queries.filter(activated=True):
+		
 		if analysis.date_from != None and analysis.date_to != None:
 		    report_results = ReportResult.objects.filter(report=report, run_date__lte=analysis.date_to, run_date__gte=analyses.date_from).order_by('-run_date')  
 		elif analysis.date_from == None and analysis.date_to != None:
@@ -198,7 +199,7 @@ def create_analysis():
 	    # process outputs
 	    if not process_output_reports(results, analysis, date_now):
 		print "Error in execute analysis: %s" % (analysis.title)
-		break
+		continue
 	    
 	    if analysis.interval != 'n':
 		if analysis.date_to != None:
@@ -219,14 +220,14 @@ def create_reports():
 	if report.last_report == None or report.last_report <= date_now - timedelta( seconds=PERIOD_CHOICES[report.interval]):
 	    #if report is now so do not execute it times 
 	    if report.last_report != None and report.interval == 'n':
-		break
+		continue
 	    if report.date_to != None and report.date_to < date_now:
-		break
+		continue
 	    
 	    # check if query is good
 	    check_ok, db_query = check_query(report)
 	    if not check_ok:
-		break
+		continue
 	    
 	    # check if date patterns are in query
 	    date_pattern_from = string.find(db_query, "${{d1}}")
@@ -242,7 +243,7 @@ def create_reports():
 
 	    # excute reports for past periods
 	    if not execute_past_reports(report, db_query, date_from, date_to, date_now):
-		break
+		continue
 
 	    # execute query for this time
 	    if date_from != None:
@@ -252,7 +253,7 @@ def create_reports():
 
 	    if not execute_query(db_query, report, date_now):
 		print "error - unsupported query: report title: %s, id: " % (report.title, report.id)
-		break
+		continue
 
     return True
 
