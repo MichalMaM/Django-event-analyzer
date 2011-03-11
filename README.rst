@@ -13,6 +13,7 @@ Installation
    somewhere in your URLs
  * customize your settings, see ``eventanalyzer.conf`` for complete list of
    options and their default values
+ * run command setup.py develop
 
 Use
 ===
