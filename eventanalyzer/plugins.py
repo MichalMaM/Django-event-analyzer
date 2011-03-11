@@ -72,3 +72,6 @@ class OutputCSV:
 
     def __closefile(self):
 	self.csv_file.close()
+
+    def get_output_file(self):
+	return self.file_name

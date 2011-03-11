@@ -146,7 +146,7 @@ def process_output_reports(results, analysis, date_now):
     file_path = settings.REPORT_PATH+"/analysis%s_%s_%s_%s_%s_%s_%s" % (analysis.id, date_now.year, date_now.month, date_now.day, date_now.hour, date_now.minute, date_now.second)
     output.set_data(analysis.title, file_path, results)
 
-    result = AnalysisResult(analysis=analysis, output=string.split(output.file_name, "/")[-1], run_date=date_now)
+    result = AnalysisResult(analysis=analysis, output=string.split(output.get_output_file(), "/")[-1], run_date=date_now)
     result.save() 
     analysis.last_report = date_now
     analysis.save()
