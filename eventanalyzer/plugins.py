@@ -75,3 +75,191 @@ class OutputCSV:
 
     def get_output_file(self):
 	return self.file_name
+
+
+class OutputBarGraph:
+    """
+    Drowing data to PNG file
+    """
+
+    def set_data(self, title, file_path, data):
+	self.title = title
+	self.data = data
+	self.number_reports = len(data)
+	if self.number_reports == 0:
+	    self.file_name = file_path+"_NO_DATA.txt"
+	else:
+	    self.file_name = file_path+".png"
+	    self.canvas = canvas.init(self.file_name)
+
+	    output_count = 1
+	    for one_out in self.data[0].output_array:
+		if output_count == 2:
+		    break
+		for output in one_out:
+		    if len(output) > 1:
+			output_count = 2
+			break
+
+	    if output_count == 1:
+		print "1"
+		if self.number_reports == 1: 
+		    self.__drow_one_one_report()
+		else:
+		    self.__drow_one_more_report()
+	    else:
+		 print "2"
+		 self.__drow_more_one_report()
+	
+    def __drow_one_one_report(self):
+	
+	report = self.data[0]
+	drow_data = []
+	max_value = 0
+	for index in range(len(report.date_array)):
+	    date_elem = report.date_array[index]
+	    key, value = report.output_array[index][0].items()[0]
+	    if value == "no data":
+		continue
+	    try:
+		value = int(value)
+		if value > max_value:
+		    max_value = value
+	    except ValueError:
+		continue
+	    drow_data.append((date_elem, value))
+
+	max_value = max_value/10
+	if max_value == 0:
+	    max_value = 1
+	self.area = area.T(size = (1024,740),
+	    x_coord = category_coord.T(drow_data, 0),
+            y_grid_interval=max_value,
+	    x_axis=axis.X(format="/a-60/hL%s", label="Date [s]"),
+            y_axis=axis.Y(label="Value [-]"),
+            legend = legend.T(), 
+	    y_range = (0, None)
+	)
+
+	self.area.add_plot(bar_plot.T(label=report.report, data=drow_data))
+	self.area.draw(self.canvas)
+    
+
+    def __drow_one_more_report(self):
+
+	drow_data = []
+	all_data = []
+	max_value = 0
+	for report in self.data:
+	    partition_data = []
+	    for index in range(len(report.date_array)):
+		date_elem = report.date_array[index]
+		key, value = report.output_array[index][0].items()[0]
+		if value == "no data":
+		    continue
+		try:
+		    value = int(value)
+		    if value > max_value:
+			max_value = value
+		except ValueError:
+		    continue
+		partition_data.append((date_elem, value))
+	    if len(partition_data) == 0:
+		continue
+	    all_data.append([report.report, partition_data])
+	    drow_data = drow_data + partition_data
+	drow_data.sort()
+
+	max_value = max_value/10
+	if max_value == 0:
+	    max_value = 1
+	self.area = area.T(size = (1024,740),
+	    x_coord = category_coord.T(drow_data, 0),
+            y_grid_interval=max_value,
+	    x_axis=axis.X(format="/a-60/hL%s", label="Date [s]"),
+            y_axis=axis.Y(label="Value [-]"),
+            legend = legend.T(), 
+	    y_range = (0, None)
+	)
+	for plot in all_data:
+	    self.area.add_plot(bar_plot.T(label=plot[0], data=plot[1]))
+	self.area.draw(self.canvas)
+
+    def __drow_more_one_report(self):
+	
+	report = self.data[0]
+	legend_position = {}
+	drow_data = []
+	max_value = 0
+	used_key = None
+	# collect all possible bars for side by side 
+	for element in report.output_array:
+	    for json_out in element:
+		if len(json_out) == 1:
+		    break
+		else:
+		    if used_key == None:
+			for key, value in json_out.items():
+			    if key != "total" and key != "value":
+				used_key = key
+				if not legend_position.has_key(str(value)):
+				    legend_position[str(value)] = len(legend_position.values()) + 1
+				break
+		    else:
+			value = str(json_out[used_key])
+			if not legend_position.has_key(value):
+			    legend_position[value] = len(legend_position.values()) + 1
+			    
+	# construct data for draw	
+	for index in range(len(report.output_array)):
+	    partition_list = []
+	    partition_list.append(report.date_array[index])
+	    for i in range(len(legend_position)):
+		partition_list.append(0)
+	    for json_out in report.output_array[index]:
+		if len(json_out) == 1:
+		    partition_list = []
+		    break
+		else:
+		    position = legend_position[json_out[used_key]]
+		    if json_out.has_key("total"):
+			value = json_out["total"]
+			partition_list[position] = value
+			if value > max_value:
+			    max_value = value
+		    elif json_out.has_key("value"):
+			value = json_out["value"]
+			partition_list[position] = value
+			if value > max_value:
+			    max_value = value
+			
+	    if len(partition_list) > 1:
+		drow_data.append(partition_list)
+
+
+	max_value = max_value/10
+	if max_value == 0:
+	    max_value = 1
+
+	self.area = area.T(size = (1024,740),
+	    x_coord = category_coord.T(drow_data, 0),
+            y_grid_interval=max_value,
+	    x_axis=axis.X(format="/a-60/hL%s", label="Date [s]"),
+            y_axis=axis.Y(label="Value [-]"),
+            legend = legend.T(), 
+	    y_range = (0, None)
+	)
+
+	chart_object.set_defaults(bar_plot.T, direction="vertical", data=drow_data)
+	
+	data_labels = legend_position.items()[:]
+	data_labels.sort(key=lambda number: number[1])
+	
+	for i in range(len(drow_data[0])-1) :
+	    self.area.add_plot(bar_plot.T(label=font.quotemeta(data_labels[i][0]), hcol=i+1, cluster=(i,len(drow_data[0])-1)))
+
+	self.area.draw(self.canvas)
+	
+
+    def get_output_file(self):
+	return self.file_name

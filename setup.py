@@ -50,7 +50,8 @@ setup(
     ],
     entry_points = {
         'output.plugins.0.01': [
-            'output_csv_file = %s.plugins:OutputCSV' % name, 
+            'output_csv_file = %s.plugins:OutputCSV' % name,
+	    'output_bar_graph_file = %s.plugins:OutputBarGraph' % name
         ]
     }
 )
