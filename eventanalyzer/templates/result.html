@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Result for your query</h1>
+<div>
+    <p>
+	<label for="id_db_query">Query result:</label>
+	<textarea id="id_db_query" rows="20" cols="80" name="db_query">{{ query }}</textarea>
+    </p>
+    <a href="{% url eventanalyzer_try_query %}">Try new query</a>
+    <a href="{% url admin:eventanalyzer_report_add %}">Create report</a>
+</div>
+{% endblock %}

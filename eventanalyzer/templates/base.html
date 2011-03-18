@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="imagetoolbar" content="no" />
+<title>{% block pagetitle %}Try query{% endblock %}</title> 
+<style media="all" type="text/css">
+html * { padding:0; margin:0; }
+body * { padding:10px; }
+body * * { padding:0; }
+body { font-size: 12px; font-family: sans-serif; }
+
+h1 {   
+        font-weight:normal;
+}
+a {
+	color: #000;
+}
+#header {
+	color: black;
+        background-color: white;
+}
+#content h1 {
+	color: white;
+        background-color: aqua;
+	margin-left: -10px;
+	margin-right: -10px;
+	margin-top: -10px;
+	margin-bottom: 10px;
+}
+
+#content {
+	color: black;
+        background-color: white;
+	border: 1px inset aqua;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#content a {
+	color: black;
+	background-color: white;
+	padding: 1px;
+	border: 1px outset black;
+	text-decoration: none;
+}
+
+#content a:hover {
+	color: white;
+	background-color: black;
+	border: 1px inset white;
+}
+
+#content div {
+	width: 660px;
+	margin-left: 200px;
+	border: 4px inset gray;
+	padding: 10px;
+	background-color: aqua;
+}
+#content div form p * {
+	float: left;
+}
+#content div form input {
+	float: none;
+	margin-top: 10px;
+	background-color: white;
+	color: black;
+}
+#content div form label {
+	width: 90%;
+}
+
+#content div .errorlist {
+	color: red;
+	background: white;
+}
+
+#applied-filters {
+	margin: 0;
+	padding: 0 15px;
+}
+#applied-filters h4 {
+	margin: 0;
+	padding: 0;
+}
+#applied-filters ul {
+	list-style: circle;
+	margin: 0;
+	padding: 5px 16px;
+}
+#applied-filters ul li {
+	padding: 6px;
+	margin: 0;
+}
+
+#record-list .record {
+        border: 1px solid #ddd;
+        padding: 12px 16px 16px 16px;
+        margin: 5px 0;
+        background: #fefefe;
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+}
+#record-list .record h3,
+#record-detail .record h3 {
+        padding: 0;
+        margin: 0;
+	font-weight: normal;
+}
+#record-list .record h3 .additional-info,
+#record-detail .record h3 .additional-info {
+	float: right;
+}
+#record-list .record h3 .since,
+#record-detail .record h3 .since {
+	font-size: 11px;
+}
+#record-list .record p,
+#record-detail .record p {
+	padding: 5px 0;
+	margin: 0;
+}
+#pagging {
+	padding: 12px 27px 2px 27px;
+	margin: 0;
+}
+#pagging p {
+	margin: 0;
+	padding: 0;
+}
+
+/*
+#content {
+	padding: 0 10px 24px 10px;
+}
+*/
+
+#record-detail .record {
+        border: 1px solid #ddd;
+        padding: 12px 16px 16px 16px;
+        margin: 5px 0;
+        border-radius: 15px;
+        -moz-border-radius: 15px;
+}
+#record-detail pre {
+	background: silver;
+        padding: 12px 16px 16px 16px;
+        margin: 12px 0;
+        border-radius: 15px;
+        -moz-border-radius: 15px;
+}
+#record-detail .record-info {
+	list-style: none;
+	margin: 12px 0;
+	padding 0;
+}
+#record-detail .record-info li {
+        clear: both;
+	margin: 0;
+	padding: 4px 0;
+}
+
+#record-detail .record-info .key {
+	display: block;
+	float: left;
+	width: 70px;
+}
+#record-detail .record-info .value {
+        display: block;
+        float: left; 
+	margin-left: 20px
+}
+
+
+.LEVEL-CRITICAL {
+	color: #bd00a5;
+}
+.LEVEL-ERROR {
+	color: #bd0000;
+}
+.LEVEL-WARNING {
+	color: #ff4800;
+}
+.LEVEL-INFO {
+	color: #85c374;
+}
+
+</style> 
+</head>
+<body> 
+        <div id="header">
+	{% block header %}
+	{% endblock %}
+	</div>
+	<div id="content"> 
+	{% block content %}
+	{% endblock %}
+	</div>
+</body>
+</html>
+
