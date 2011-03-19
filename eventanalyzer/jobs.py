@@ -169,13 +169,13 @@ def create_analysis():
 	    for report in analysis.queries.filter(activated=True):
 		
 		if analysis.date_from != None and analysis.date_to != None:
-		    report_results = ReportResult.objects.filter(report=report, run_date__lte=analysis.date_to, run_date__gte=analyses.date_from).order_by('-run_date')  
+		    report_results = ReportResult.objects.filter(report=report, run_date__lte=analysis.date_to, run_date__gte=analyses.date_from).order_by('run_date')  
 		elif analysis.date_from == None and analysis.date_to != None:
-		    report_results = ReportResult.objects.filter(report=report, run_date__lte=analysis.date_to).order_by('-run_date')
+		    report_results = ReportResult.objects.filter(report=report, run_date__lte=analysis.date_to).order_by('run_date')
 		elif analysis.date_from != None and analysis.date_to == None:
-		    report_results = ReportResult.objects.filter(report=report, run_date__gte=analyses.date_from).order_by('-run_date')
+		    report_results = ReportResult.objects.filter(report=report, run_date__gte=analyses.date_from).order_by('run_date')
 		else:
-		    report_results = ReportResult.objects.filter(report=report).order_by('-run_date')
+		    report_results = ReportResult.objects.filter(report=report).order_by('run_date')
 		
 		# create output from mongo output
 		output_result = OutputResult(report=report.title)

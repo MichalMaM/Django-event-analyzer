@@ -133,7 +133,14 @@ class OutputBarGraph:
 	max_value = max_value/10
 	if max_value == 0:
 	    max_value = 1
-	self.area = area.T(size = (1024,740),
+
+	width = len(drow_data)*30
+	if width > 5000:
+	    width = 5000
+	elif width < 600:
+	    width = 600
+
+	self.area = area.T(size = (width,740),
 	    x_coord = category_coord.T(drow_data, 0),
             y_grid_interval=max_value,
 	    x_axis=axis.X(format="/a-60/hL%s", label="Date [s]"),
@@ -174,7 +181,14 @@ class OutputBarGraph:
 	max_value = max_value/10
 	if max_value == 0:
 	    max_value = 1
-	self.area = area.T(size = (1024,740),
+
+	width = len(drow_data)*30
+	if width > 5000:
+	    width = 5000
+	elif width < 600:
+	    width = 600
+
+	self.area = area.T(size = (width,740),
 	    x_coord = category_coord.T(drow_data, 0),
             y_grid_interval=max_value,
 	    x_axis=axis.X(format="/a-60/hL%s", label="Date [s]"),
@@ -237,12 +251,18 @@ class OutputBarGraph:
 	    if len(partition_list) > 1:
 		drow_data.append(partition_list)
 
-
 	max_value = max_value/10
 	if max_value == 0:
 	    max_value = 1
 
-	self.area = area.T(size = (1024,740),
+	same_mark = len(drow_data[0])-1
+	width = len(drow_data)*same_mark*30
+	if width > 5000:
+	    width = 5000
+	elif width < 600:
+	    width = 600
+
+	self.area = area.T(size = (width,740),
 	    x_coord = category_coord.T(drow_data, 0),
             y_grid_interval=max_value,
 	    x_axis=axis.X(format="/a-60/hL%s", label="Date [s]"),
