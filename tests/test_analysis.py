@@ -8,24 +8,6 @@ from eventanalyzer.models import Report, ReportResult, Analysis, AnalysisResult
 from settings import STATISTICS_REPORT_PATH
 
 
-def test_getting_correct_query():
-    query = "db.events.count()"
-    report = Report(title="report1", description="test", db_query=query, interval='m')
-    tools.assert_equals((True, query), check_query(report))
-    query = "db.events.group()"
-    report.db_query=query
-    tools.assert_equals((True, 'db.events.group().forEach(printjson)'), check_query(report))
-    query = "db.events.group().forEach(printjson)"
-    report.db_query=query
-    tools.assert_equals((True, query), check_query(report))
-    query = "db.events.group"
-    report.db_query=query
-    tools.assert_equals((False, ''), check_query(report))
-    query = "db.events.find()"
-    report = Report(title="report2", description="test2", db_query=query, interval='w')
-    tools.assert_equals((False, ''), check_query(report))
-
-
 def test_create_periodic_csv_analysis_for_count():
     report = Report(title="report1", description="test", db_query="db.events.count()", interval='m')
     report.save()

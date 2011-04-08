@@ -109,8 +109,8 @@ class OutputBarGraph:
 		else:
 		    self.__drow_one_more_report()
 	    else:
-		 print "2"
-		 self.__drow_more_one_report()
+                print "2"
+                self.__drow_more_one_report()
 	
     def __drow_one_one_report(self):
 	
@@ -276,7 +276,7 @@ class OutputBarGraph:
 	data_labels = legend_position.items()[:]
 	data_labels.sort(key=lambda number: number[1])
 	
-	for i in range(len(drow_data[0])-1) :
+	for i in range(len(drow_data[0])-1):
 	    self.area.add_plot(bar_plot.T(label=font.quotemeta(data_labels[i][0]), hcol=i+1, cluster=(i,len(drow_data[0])-1)))
 
 	self.area.draw(self.canvas)
