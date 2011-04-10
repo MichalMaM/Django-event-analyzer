@@ -108,7 +108,7 @@ def test_create_periodic_report_with_group():
     tools.assert_not_equals(Report.objects.all()[0].last_report, None)
     collection.remove()
 
-def test_create_periodic_report_with_group():
+def test_create_aperiodic_report_with_group():
     collection = get_mongo_collection()
     collection.remove()
     collection.insert({
@@ -132,4 +132,60 @@ def test_create_periodic_report_with_group():
     tools.assert_equals(ReportResult.objects.all().count(), 1)
     tools.assert_not_equals(Report.objects.all()[0].last_report, None)
     tools.assert_equals(ReportResult.objects.all()[0].output, '{ "params.url" : "www.atlas.cz", "total" : 1 }\n{ "params.url" : "www.centrum.cz", "total" : 2 }\n')
+    collection.remove()
+    
+def test_create_periodic_report_with_mapreduce():
+    collection = get_mongo_collection()
+    collection.remove()
+    collection.insert({
+        'event': "statistic",
+        'timestamp': datetime(2010, 2, 7),
+        'params': {"url": "www.centrum.cz"}
+    })
+    collection.insert({
+        'event': "statistic",
+        'timestamp': datetime(2010, 5, 1),
+        'params': {"url": "www.centrum.cz"}
+    })
+    collection.insert({
+        'event': "statistic",
+        'timestamp': datetime(2011, 3, 9),
+        'params': {"url": "www.centrum.cz"}
+    })
+    collection.insert({
+        'event': "statistic",
+        'timestamp': datetime(2011, 2, 13),
+        'params': {"url": "www.centrum.cz"}
+    })
+    report = Report(title="report mapreduce", description="test", db_query='m = function() { if (this.event == "statistic") { emit(this.params.url, 1); }};r = function(url, nums) { var total=0; for (var i=0; i<nums.length; i++) { total += nums[i]; } return total; };res = db.%s.mapReduce(m, r, { query : {timestamp: {$lt : ${{d2}}, $gt : ${{d1}}}}});res.find().forEach(printjson);' % (STATISTICS_MONGODB_COLLECTION,), interval='y')
+    report.save()
+    tools.assert_equals(True, create_reports())
+    tools.assert_not_equals(ReportResult.objects.all().count(), 0)
+    tools.assert_not_equals(Report.objects.all()[0].last_report, None)
+    collection.remove()
+
+def test_create_aperiodic_report_with_mapreduce():
+    collection = get_mongo_collection()
+    collection.remove()
+    collection.insert({
+        'event': "statistic",
+        'timestamp': datetime(2010, 4, 1),
+        'params': {"url": "www.atlas.cz"}
+    })
+    collection.insert({
+        'event': "statistic",
+        'timestamp': datetime(2011, 3, 7),
+        'params': {"url": "www.centrum.cz"}
+    })
+    collection.insert({
+        'event': "statistic",
+        'timestamp': datetime(2011, 3, 21),
+        'params': {"url": "www.centrum.cz"}
+    })
+    report = Report(title="report mapreduce", description="test", db_query='m = function() { if (this.event == "statistic") { emit(this.params.url, 1); }};r = function(url, nums) { var total=0; for (var i=0; i<nums.length; i++) { total += nums[i]; } return total; };res = db.%s.mapReduce(m, r);res.find().forEach(printjson);' % (STATISTICS_MONGODB_COLLECTION,), interval='n')
+    report.save()
+    tools.assert_equals(True, create_reports())
+    tools.assert_not_equals(ReportResult.objects.all().count(), 0)
+    tools.assert_not_equals(Report.objects.all()[0].last_report, None)
+    tools.assert_equals(ReportResult.objects.all()[0].output, '{ "_id" : "www.atlas.cz", "value" : 1 }\n{ "_id" : "www.centrum.cz", "value" : 2 }\n')
     collection.remove()
