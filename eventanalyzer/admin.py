@@ -5,8 +5,9 @@ from eventanalyzer.forms import ReportAdminForm
 class ReportAdmin(admin.ModelAdmin):
     form = ReportAdminForm
 
-    list_display = ('title', 'description', 'interval', 'last_report')
+    list_display = ('title', 'description', 'interval', 'last_report', 'activated')
     search_fields = ['title']
+    list_filter = ['interval', 'activated']
     date_hierarchy = 'last_report'
 
 class ReportResultAdmin(admin.ModelAdmin):
@@ -18,8 +19,9 @@ class ReportResultAdmin(admin.ModelAdmin):
 
 class AnalysisAdmin(admin.ModelAdmin):
 
-    list_display = ('title', 'description', 'interval', 'last_report')
+    list_display = ('title', 'description', 'interval', 'last_report', 'activated')
     search_fields = ['title']
+    list_filter = ['interval', 'activated']
     date_hierarchy = 'last_report'
     
     fieldsets = (
