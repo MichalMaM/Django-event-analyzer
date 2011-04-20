@@ -92,7 +92,9 @@ class OutputBarGraph:
 	else:
 	    self.file_name = file_path+".png"
 	    self.canvas = canvas.init(self.file_name)
-
+            if theme.use_color != 1:
+                theme.use_color = 1
+                theme.reinitialize()
 	    output_count = 1
 	    for one_out in self.data[0].output_array:
 		if output_count == 2:
